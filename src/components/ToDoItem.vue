@@ -1,40 +1,39 @@
 <template>
-  <div>
+  <div :id="todo.id">
     <input
-      id="item"
       type="checkbox"
-      v-model="done"
+      v-model="todo.done"
     >
     <label
       for="item"
       :class="{
-      done
+      done: todo.done
     }"
     >
-      {{description}}
+      {{todo.description}}
     </label>
     <button
-      v-if="!showEditToDo"
-      @click="toggleEditing"
+      v-show="!isEditing"
+      @click="showEdit"
     >
       edit
     </button>
     <form
-      v-if="showEditToDo"
+      v-show="isEditing"
       @submit.prevent="handleSubmit"
     >
       <input
         type="text"
-        v-model="newDescription"
+        v-model="todo.description"
       />
-      <button @click.prevent="toggleEditing">
+      <button @click.prevent="hideEdit">
         (cancel)
       </button>
       <button type="submit">
         (update)
       </button>
     </form>
-    <button @click="handleRemove">
+    <button @click.prevent="handleDelete(todo)">
       x
     </button>
   </div>
@@ -43,41 +42,58 @@
 <script lang="ts">
 import Vue from 'vue';
 
+export class ToDo {
+  id: number;
+
+  done: boolean;
+
+  description: string;
+
+  constructor({
+    description,
+    done = false,
+    id = Date.now(),
+  }: {
+    id?: number;
+
+    done?: boolean;
+
+    description: string;
+  }) {
+    this.description = description;
+    this.done = done;
+    this.id = id;
+  }
+}
+
 const initialState = {
-  done: false,
-  showEditToDo: false,
-  newDescription: '',
+  isEditing: false,
 };
 
 export default Vue.extend({
   name: 'ToDoItem',
   props: {
-    removeToDo: Function,
-    updateToDo: Function,
-    description: String,
-    id: Number,
+    todo: ToDo,
   },
   data() {
-    return initialState;
+    return {
+      ...initialState,
+    };
   },
   methods: {
-    handleRemove() {
-      return this.removeToDo(this.id);
+    handleDelete(todo: ToDo) {
+      this.$emit('delete-todo', todo);
+      this.hideEdit();
     },
-    toggleEditing() {
-      this.showEditToDo = !this.showEditToDo;
-      this.resetNewDescription();
+    showEdit() {
+      this.isEditing = true;
     },
-    resetNewDescription() {
-      if (this.newDescription === initialState.newDescription) {
-        this.newDescription = this.description;
-      } else {
-        this.newDescription = initialState.newDescription;
-      }
+    hideEdit() {
+      this.isEditing = false;
     },
     handleSubmit() {
-      this.updateToDo(this.id, this.newDescription);
-      this.toggleEditing();
+      this.$emit('update-todo', this.todo.id, this.todo.description);
+      this.hideEdit();
     },
   },
 });

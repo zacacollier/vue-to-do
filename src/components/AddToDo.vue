@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { ToDo } from './ToDoItem.vue';
 
 const initialState = {
   todo: {
@@ -45,8 +46,7 @@ export default Vue.extend({
   },
   methods: {
     handleSubmit() {
-      const newToDo = { ...this.todo, id: Date.now() };
-      this.addToDo(newToDo);
+      this.addToDo(new ToDo(this.todo));
       this.reset();
     },
     reset() {
