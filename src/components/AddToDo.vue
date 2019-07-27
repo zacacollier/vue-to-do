@@ -47,9 +47,9 @@ export default Vue.extend({
     handleSubmit() {
       const newToDo = { ...this.todo, id: Date.now() };
       this.addToDo(newToDo);
-      this.resetToDo();
+      this.reset();
     },
-    resetToDo() {
+    reset() {
       this.todo = { ...initialState.todo };
     },
     toggleAddToDo() {

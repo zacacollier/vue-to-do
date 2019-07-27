@@ -2,11 +2,12 @@
   <div>
     <ToDoItem
       v-for="({ id, description, done }, index) in todos"
-      :key="`item-${index}`"
       :id="id"
       :description="description"
       :done="done"
+      :key="`item-${index}`"
       :removeToDo="removeToDo"
+      :updateToDo="updateToDo"
     />
     <AddToDo :addToDo="addToDo" />
   </div>
@@ -40,6 +41,10 @@ export default Vue.extend({
     },
     removeToDo(id: number) {
       this.todos = this.todos.filter(todo => todo.id !== id);
+    },
+    updateToDo(id: number, newDescription: string) {
+      const i = this.todos.findIndex(todo => todo.id === id);
+      this.todos[i].description = newDescription;
     },
   },
 });
