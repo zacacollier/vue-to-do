@@ -66,18 +66,14 @@ export class ToDo {
   }
 }
 
-const initialState = {
-  isEditing: false,
-};
-
 export default Vue.extend({
   name: 'ToDoItem',
   props: {
-    todo: ToDo,
+    todo: Object,
   },
   data() {
     return {
-      ...initialState,
+      isEditing: false,
     };
   },
   methods: {
