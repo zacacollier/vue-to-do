@@ -7,14 +7,23 @@
       @delete-todo="deleteToDo"
       @update-todo="updateToDo"
     />
-    <AddToDo :addToDo="addToDo" />
-    <button @click="showAll">
+    <AddToDo @add-todo="addToDo" />
+    <button
+      @click="showAll"
+      :disabled="visibility === 'all'"
+    >
       Show All
     </button>
-    <button @click="onlyShowComplete">
+    <button
+      @click="onlyShowComplete"
+      :disabled="visibility === 'complete'"
+    >
       Hide Incomplete
     </button>
-    <button @click="onlyShowIncomplete">
+    <button
+      @click="onlyShowIncomplete"
+      :disabled="visibility === 'incomplete'"
+    >
       Hide Done
     </button>
   </div>
@@ -69,12 +78,12 @@ export default Vue.extend({
       this.todos = [...this.todos, todo];
     },
     deleteToDo(todo: ToDo) {
-      const idx = this.todos.findIndex(t => t.id === todo.id);
-      this.todos.splice(idx, 1);
+      const targetIndex = this.todos.findIndex(({ id }) => id === todo.id);
+      this.todos.splice(targetIndex, 1);
     },
     updateToDo(id: number, newDescription: string) {
-      const i = this.todos.findIndex(todo => todo.id === id);
-      this.todos[i].description = newDescription;
+      const targetIndex = this.todos.findIndex(todo => todo.id === id);
+      this.todos[targetIndex].description = newDescription;
     },
   },
   computed: {

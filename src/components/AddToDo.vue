@@ -12,7 +12,7 @@
     >
       <input
         type="text"
-        v-model="todo.description"
+        v-model="description"
         placeholder="Description"
       />
       <button type="submit">
@@ -30,27 +30,28 @@ import Vue from 'vue';
 import { ToDo } from './ToDoItem.vue';
 
 const initialState = {
-  todo: {
-    description: '',
-  },
+  description: '',
   showAddToDo: false,
 };
 
 export default Vue.extend({
   name: 'AddToDo',
-  props: {
-    addToDo: Function,
-  },
   data() {
-    return initialState;
+    return { ...initialState };
   },
   methods: {
     handleSubmit() {
-      this.addToDo(new ToDo(this.todo));
+      const { description } = this;
+      this.$emit(
+        'add-todo',
+        new ToDo({
+          description,
+        }),
+      );
       this.reset();
     },
     reset() {
-      this.todo = { ...initialState.todo };
+      this.description = initialState.description;
     },
     toggleAddToDo() {
       this.showAddToDo = !this.showAddToDo;
